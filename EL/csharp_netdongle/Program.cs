@@ -109,8 +109,19 @@ namespace Elite4SDemo
                     do
                     {
 
+                        ret = Sense4Net.S4Enum(s4Context, ref size);
+                        if (ret != S4NetDefine.S4_SUCCESS)
+                        {
+                            msg = string.Format("Enum error ret value 0x{0:X8}", ret);
+                            WriteLineRed(msg);
+                        }
+                        else
+                        {
+                            msg = string.Format("Enum success! Has {0} lock(s)", size / (double)Marshal.SizeOf(typeof(SENSE4_CONTEXT)));
+                            WriteLineGreen(msg);
+                        }
 
-                        ret = Sense4Net.S4Open(ref s4Ctx);
+                        ret = Sense4Net.S4Open(ref s4Context[0]);
                         if (ret != S4NetDefine.S4_SUCCESS)
                         {
                             msg = string.Format("S4Open error ret value 0x{0:X8}", ret);
@@ -133,7 +144,7 @@ namespace Elite4SDemo
                         inBufflen = 2;
                         outBufflen = 0;
 
-                        ret = Sense4Net.S4Control(ref s4Ctx, S4NetDefine.S4_GET_LICENSE, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
+                        ret = Sense4Net.S4Control(ref s4Context[0], S4NetDefine.S4_GET_LICENSE, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
                         if (ret != S4NetDefine.S4_SUCCESS)
                         {
                             msg = string.Format("S4Control S4_GET_LICENSE error ret value 0x{0:X8}", ret);
@@ -148,7 +159,7 @@ namespace Elite4SDemo
                         inBufflen = 10;
                         string fileID = "0001";
 
-                        ret = Sense4Net.S4Execute(ref s4Ctx, fileID, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
+                        ret = Sense4Net.S4Execute(ref s4Context[0], fileID, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
                         if (ret != S4NetDefine.S4_SUCCESS)
                         {
                             msg = string.Format("S4Execute error ret value 0x{0:X8}", ret);
@@ -161,7 +172,7 @@ namespace Elite4SDemo
                         }
 
 
-                        ret = Sense4Net.S4ExecuteEx(ref s4Ctx, fileID, S4NetDefine.S4_VM_EXE, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
+                        ret = Sense4Net.S4ExecuteEx(ref s4Context[0], fileID, S4NetDefine.S4_VM_EXE, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
                         if (ret != S4NetDefine.S4_SUCCESS)
                         {
                             msg = string.Format("S4ExecuteEx error ret value 0x{0:X8}", ret);
@@ -172,9 +183,9 @@ namespace Elite4SDemo
                             msg = string.Format("S4ExecuteEx success! {0}", BitConverter.ToString(outBuff, 0, CrtlReturned));
                             WriteLineGreen(msg);
                         }
-                        
+                        Thread.Sleep(500);
 
-                        ret = Sense4Net.S4Control(ref s4Ctx, S4NetDefine.S4_FREE_LICENSE, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
+                        ret = Sense4Net.S4Control(ref s4Context[0], S4NetDefine.S4_FREE_LICENSE, inBuff, inBufflen, outBuff, outBufflen, ref CrtlReturned);
                         if (ret != S4NetDefine.S4_SUCCESS)
                         {
                             msg = string.Format("S4Control S4_FREE_LICENSE error ret value 0x{0:X8}", ret);
@@ -185,7 +196,7 @@ namespace Elite4SDemo
                             msg = string.Format("S4Control S4_FREE_LICENSE success!");
                             WriteLineGreen(msg);
                         }
-                        //ret = Sense4Net.S4Close(ref s4Ctx);
+                        ret = Sense4Net.S4Close(ref s4Context[0]);
                         if (ret != S4NetDefine.S4_SUCCESS)
                         {
                             msg = string.Format("S4Close error ret value 0x{0:X8}", ret);
@@ -196,7 +207,7 @@ namespace Elite4SDemo
                             msg = string.Format("S4Close success! ");
                             WriteLineGreen(msg);
                         }
-                        Thread.Sleep(500);
+                        
                     } while (true);
                 }//end for next lock
 
