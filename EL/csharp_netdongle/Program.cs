@@ -138,7 +138,7 @@ namespace Elite4SDemo
                         int outBufflen = outBuff.Length;
                         var CrtlReturned = default(int);
                         // get license
-                        inBuff[0] = 0x00; //low byte modid
+                        inBuff[0] = 0x01; //low byte modid
                         inBuff[1] = 0x00; //hig byte modid
                                           // modid length = 2
                         inBufflen = 2;
